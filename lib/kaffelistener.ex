@@ -10,7 +10,7 @@ defmodule KaffeListener do
       {KaffeListener.StateServer, name: KaffeListener.StateServer},
       {Tortoise.Connection,
         [
-          client_id: KaffeListener.MQTTConnection,
+          client_id: "KaffeListenerElixir#{:rand.uniform(1_000_000_000)}",
           server: {Tortoise.Transport.Tcp, host: System.get_env("MQTT_HOST"), port: String.to_integer(System.get_env("MQTT_PORT"))},
           handler: {KaffeListener.MQTTHandler, []},
           user_name: System.get_env("MQTT_USERNAME"),
