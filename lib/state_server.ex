@@ -52,6 +52,14 @@ defmodule KaffeListener.StateServer do
   def power_value(ma) when ma > 10_000, do: :heating
   def power_value(ma), do: :off
 
+  def notify_mqtt(uid, volume) do
+    payload = Poison.encode! %{
+      "uid": uid,
+      "volume": volume
+    }
+    Tortoise.publish(KaffeListener.get_client_id(), "kaffe_brew_finished", payload)
+  end
+
   def handle_info(:ping, %{ power_history: power_history, last_card: last_card } = state) do
     schedule_ping()
 
@@ -81,9 +89,12 @@ defmodule KaffeListener.StateServer do
         Logger.info "Diff between user and brew #{DateTime.diff(brew_history |> Enum.at(0) |> elem(1), last_card.time)}"
         if DateTime.diff(brew_history |> Enum.at(-1) |> elem(1), last_card.time) < 60*15 and last_card.username != "" do
           KaffeListener.Slack.register_brew_finished(brew_volume, last_card.username)
+          notify_mqtt(last_card.uid, brew_volume)
         else
           KaffeListener.Slack.register_brew_finished(brew_volume)
+          notify_mqtt(nil, brew_volume)
         end
+
       end
       {:noreply, %{state | power_history: []}}
     else
