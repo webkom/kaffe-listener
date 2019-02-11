@@ -1,21 +1,4 @@
 # KaffeListener
 
-**TODO: Add description**
-
-## Installation
-
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `kaffelistener` to your list of dependencies in `mix.exs`:
-
-```elixir
-def deps do
-  [
-    {:kaffelistener, "~> 0.1.0"}
-  ]
-end
-```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/kaffelistener](https://hexdocs.pm/kaffelistener).
+This repo connects to our MQTT server, listening 1) for power measurements from a socket connected to our moccamaster, and 2) for card scannings from a card reader placed next to the moccamaster. Whenever coffee is brewed, the script estimates the volume by checking how long the brew took, and then sends a message to slack with who brewed and how much they brewed. The information about the brew is also broadcast back to MQTT for other consumers, where it is picked up by another script that stores the historical data in influxDB.
 
