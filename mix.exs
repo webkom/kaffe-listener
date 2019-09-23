@@ -21,10 +21,13 @@ defmodule KaffeListener.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:credo, "~> 1.1.0", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 0.5", only: [:dev, :test], runtime: false},
       {:tortoise, "~> 0.9.4"},
       {:poison, "~> 3.1"},
       {:httpoison, "~> 1.5"},
-      {:distillery, "~> 2.0"}
+      {:distillery, "~> 2.0"},
+      {:slack, "~> 0.16.0"}
     ]
   end
 end

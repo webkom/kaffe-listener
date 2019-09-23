@@ -20,6 +20,15 @@ use Mix.Config
 #
 #     config :logger, level: :info
 #
+config :kaffelistener,
+  mqtt_host: System.get_env("MQTT_HOST"),
+  mqtt_port: String.to_integer(System.get_env("MQTT_PORT")),
+  mqtt_username: System.get_env("MQTT_USERNAME"),
+  mqtt_password: System.get_env("MQTT_PASSWORD")
+
+config :slack,
+  api_token: System.get_env("SLACK_API_TOKEN"),
+  channel: System.get_env("SLACK_CHANNEL", "C14LTGRD2")
 
 # It is also possible to import configuration files, relative to this
 # directory. For example, you can emulate configuration per environment

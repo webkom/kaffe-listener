@@ -13,25 +13,30 @@ defmodule KaffeListener do
   def start(_type, _args) do
     import Supervisor.Spec
 
-    Logger.info "client_id: #{get_client_id()}"
+    Logger.info("client_id: #{get_client_id()}")
 
     children = [
       {KaffeListener.StateServer, name: KaffeListener.StateServer},
       {Tortoise.Connection,
-        [
-          name: KaffeListener.MQTTHandler,
-          client_id: get_client_id(),
-          server: {Tortoise.Transport.Tcp, host: System.get_env("MQTT_HOST"), port: String.to_integer(System.get_env("MQTT_PORT"))},
-          handler: {KaffeListener.MQTTHandler, []},
-          user_name: System.get_env("MQTT_USERNAME"),
-          password: System.get_env("MQTT_PASSWORD"),
-          subscriptions: [
-            {"kaffe_tracker/#", 0},
-            {"kaffe_register/#", 0}
-          ]
-        ]}
+       [
+         name: KaffeListener.MQTTHandler,
+         client_id: get_client_id(),
+         server: {
+           Tortoise.Transport.Tcp,
+           host: Application.get_env(:kaffelistener, :mqtt_host),
+           port: Application.get_env(:kaffelistener, :mqtt_port)
+         },
+         handler: {KaffeListener.MQTTHandler, []},
+         user_name: Application.get_env(:kaffelistener, :mqtt_username),
+         password: Application.get_env(:kaffelistener, :mqtt_password),
+         subscriptions: [
+           {"kaffe_tracker/#", 0},
+           {"kaffe_register/#", 0}
+         ]
+       ]}
     ]
-    Logger.info "start app"
+
+    Logger.info("start app")
 
     opts = [strategy: :one_for_one, name: KaffeListener.Supervisor]
     Supervisor.start_link(children, opts)
