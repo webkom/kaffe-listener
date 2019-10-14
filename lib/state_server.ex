@@ -120,8 +120,7 @@ defmodule KaffeListener.StateServer do
 
       {:noreply, %{state | power_history: []}}
     else
-      if length(brew_history) == 3 and
-           DateTime.diff(DateTime.now(), last_card.time) < 60 * 15 and last_card.username != "" do
+      if length(brew_history) == 3 and (last_card.username == "" or DateTime.diff(DateTime.utc_now(), last_card.time) > 60 * 15) do
         KaffeListener.Slack.remind_about_card()
       end
 
