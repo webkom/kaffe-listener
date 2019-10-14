@@ -16,7 +16,7 @@ RUN APP_NAME="kaffelistener" && \
 #================
 #Deployment Stage
 #================
-FROM bitwalker/alpine-erlang:21
+FROM bitwalker/alpine-erlang:21.0
 
 #Copy and extract .tar.gz Release file from the previous stage
 COPY --from=build /export/ .
