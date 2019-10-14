@@ -5,6 +5,10 @@ defmodule KaffeListener.Slack do
     send("<@#{username}> brygger kaffe :sunglasses:")
   end
 
+  def remind_about_card() do
+    send("Hubot say husk å registrere kortet ditt når du lager kortet")
+  end
+
   def register_brew_finished(volume) do
     send("Ukjent brygget #{volume} liter kaffe")
   end
@@ -16,15 +20,19 @@ defmodule KaffeListener.Slack do
   def send(message) do
     url = System.get_env("SLACK_URL")
     headers = ["Content-Type": "application/json"]
-    body = Poison.encode!(%{
-      "text": message,
-      "username": "kaffe",
-      "channel": "#kaffe",
-      "icon_emoji": ":coffee:"
-    })
+
+    body =
+      Poison.encode!(%{
+        text: message,
+        username: "kaffe",
+        channel: "#kaffe",
+        icon_emoji: ":coffee:"
+      })
+
     case HTTPoison.post(url, body, headers) do
       {:ok, %HTTPoison.Response{status_code: 200, body: _body}} ->
         :ok
+
       {:error, %HTTPoison.Error{reason: reason}} ->
         {:error, reason}
     end
