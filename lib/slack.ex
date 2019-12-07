@@ -5,10 +5,6 @@ defmodule KaffeListener.Slack do
     send("<@#{username}> brygger kaffe :sunglasses:")
   end
 
-  def remind_about_card() do
-    send("Hubot say husk å registrere kortet ditt når du lager kaffe")
-  end
-
   def register_brew_finished(volume) do
     send("Ukjent brygget #{volume} liter kaffe")
   end

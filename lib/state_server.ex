@@ -71,6 +71,18 @@ defmodule KaffeListener.StateServer do
     Tortoise.publish(KaffeListener.get_client_id(), "kaffe_brew_finished", payload)
   end
 
+  def notify_mqtt_brew_started() do
+    Logger.info("Brew started without card")
+    payload =
+      Poison.encode!(%{
+        command: "say",
+        text: "husk å registrere kortet ditt når du lager kaffe",
+        voice_name: "no"
+      })
+
+    Tortoise.publish(KaffeListener.get_client_id(), "office_say/command", payload)
+  end
+
   def handle_info(:ping, %{power_history: power_history, last_card: last_card} = state) do
     schedule_ping()
 
@@ -121,7 +133,7 @@ defmodule KaffeListener.StateServer do
       {:noreply, %{state | power_history: []}}
     else
       if length(brew_history) == 3 and (last_card.username == "" or DateTime.diff(DateTime.utc_now(), last_card.time) > 60 * 15) do
-        KaffeListener.Slack.remind_about_card()
+        KaffeListener.StateServer.notify_mqtt_brew_started()
       end
 
       {:noreply, state}
