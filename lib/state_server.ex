@@ -73,6 +73,19 @@ defmodule KaffeListener.StateServer do
 
   def notify_mqtt_brew_started() do
     Logger.info("Brew started without card")
+
+    # Publish 10 beeps to the office speakers
+    payload =
+      Poison.encode!(%{
+        command: "sine_wave",
+        duration: 0.05,
+        frequency: 2500,
+        repeat_times: 10,
+      })
+
+    Tortoise.publish(KaffeListener.get_client_id(), "office_speaker/command", payload)
+
+    # Publish voice reminder to the office speakers
     payload =
       Poison.encode!(%{
         command: "say",
@@ -80,7 +93,7 @@ defmodule KaffeListener.StateServer do
         voice_name: "no"
       })
 
-    Tortoise.publish(KaffeListener.get_client_id(), "office_say/command", payload)
+    Tortoise.publish(KaffeListener.get_client_id(), "office_speaker/command", payload)
   end
 
   def handle_info(:ping, %{power_history: power_history, last_card: last_card} = state) do
