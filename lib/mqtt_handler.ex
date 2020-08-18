@@ -13,9 +13,9 @@ defmodule KaffeListener.MQTTHandler do
   end
 
   #  topic filter kaffe_tracker/measurement
-  def handle_message(["kaffe_tracker", "measurement"], payload, state) do
+  def handle_message(["kaffe_tracker", "tele", "SENSOR"], payload, state) do
     data = Poison.decode! payload
-    power_mw = data["emeter"]["get_realtime"]["power_mw"]
+    power_mw = data["ENERGY"]["Power"] * 1000
 
     Logger.info "Sending add request from PID #{inspect self()}"
     KaffeListener.StateServer.add_value(power_mw, DateTime.utc_now)
