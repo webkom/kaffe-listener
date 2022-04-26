@@ -21,7 +21,7 @@ defmodule KaffeListener.Slack do
       Poison.encode!(%{
         text: message,
         username: "kaffe",
-        channel: "#kaffe",
+        channel: "#2-kaffe",
         icon_emoji: ":coffee:"
       })
 
